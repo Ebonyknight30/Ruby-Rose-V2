@@ -115,11 +115,11 @@ class Fun():
     async def insult(self, *, user:str):
         """Insult those ass wipes"""
         #if user == "EbonyKnight30" or user == '@Ivory' or user == 'Jack' or user == 'Ivory':
-        if user.upper() in ["EBONYKNIGHT30", "@IVORY", "JACK", "IVORY", "BALLSBS2", "BALL_SBS2", "MAN-PRI", "MANPRI", "@MAN-PRI"]:
+        if user.upper() in ["EBONYKNIGHT30", "@IVORY", "JACK", "IVORY", "BALLSBS2", "BALL_SBS2", "MAN-PRI", "MANPRI", "@MAN-PRI", "SAM"]:
             await self.bot.say("{} {}".format(user, random.choice(compliments)))
             return
         elif user.upper() in "RUBY ROSE":
-             await self.bot.say('Bitch I am aswome!')
+             await self.bot.say('Bitch I am awesome!')
              return
         await self.bot.say("{} {}".format(user, random.choice(insults)))
 
@@ -142,7 +142,7 @@ class Fun():
         elif user == self.bot.user:
             await self.bot.say("I rate myself a -1/10")
         elif user.name == 'EbonyKnight30' or user.name == '@Ivory' or user.name == 'Jack' or user.name == 'Ivory':
-            await self.bot.say("I rate Jack a 10000/10 because he is so awsome")
+            await self.bot.say("I rate Jack a -10000/10 because he can't spell")
         else:
             await self.bot.say("I rate {} a {}/10".format(user.name, random.randint(0, 10)))
 
