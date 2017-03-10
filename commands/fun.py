@@ -121,6 +121,15 @@ class Fun():
         elif user.upper() in "RUBY ROSE":
              await self.bot.say('Bitch I am awesome!')
              return
+        elif user.upper() in "YANG XIAO LONG":
+            await self.bot.say('Yang can sometimes cause things to get a bit out of HAND')
+            return
+        elif user.upper() in "WEISS SCHNEE":
+            await self.bot.say('Weiss is a bitch')
+            return
+        elif user.upper() in "BLAKE BELLADONNA":
+            await self.bot.say('Let\'s just say Gambol Shroud isn\'t the ONLY katana she likes')
+            return
         await self.bot.say("{} {}".format(user, random.choice(insults)))
 
     @commands.command()
