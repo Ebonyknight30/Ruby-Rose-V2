@@ -324,14 +324,13 @@ class Music:
         except Exception as damnit:
             await self.bot.say(py.format("{}: {}".format(type(damnit).__name__, damnit)))
 
-<<<<<<< Updated upstream
     @commands.command(pass_context=True)
     async def makemeasandwich(self, ctx):
         await self.bot.say("DON'T TELL ME WHAT TO DO!")
         self.disconnect(self, ctx)
         self.summon(self, ctx)
-        for i in range 5:
-            self.play(self, ctx, *, "heyyeyaaeyaaaeyaeyaa")
+        for i in range(5):
+            self.play(self, ctx, "heyyeyaaeyaaaeyaeyaa")
         pissed = True
         #"""Summons the bot to your current voice channel"""
         #if ctx.message.author.voice_channel is None:
@@ -353,9 +352,7 @@ class Music:
     async def sudomakemeasandwich(self, ctx):
         await self.bot.say("Okay")
         pissed = False
-=======
-            
->>>>>>> Stashed changes
+
 
 def setup(bot):
     bot.add_cog(Music(bot))
