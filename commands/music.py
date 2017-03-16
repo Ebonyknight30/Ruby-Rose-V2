@@ -16,6 +16,9 @@ load_opus_lib()
 
 ytdl_format_options = {"format": "bestaudio/best", "extractaudio": True, "audioformat": "mp3", "noplaylist": True, "nocheckcertificate": True, "ignoreerrors": False, "logtostderr": False, "quiet": True, "no_warnings": True, "default_search": "auto", "source_address": "0.0.0.0", "preferredcodec": "libmp3lame"}
 
+hey = "hey.mp3"
+pissed = False
+
 def get_ytdl(id):
     format = ytdl_format_options
     format["outtmpl"] = "data/music/{}/%(id)s.mp3".format(id)
@@ -68,6 +71,7 @@ class VoiceState:
         return self.current.player
 
     def skip(self):
+        
         self.skip_votes.clear()
         if self.is_playing():
             self.player.stop()
@@ -137,6 +141,9 @@ class Music:
 
     @commands.command(pass_context=True)
     async def play(self, ctx, *, song:str):
+        if pissed:
+            await self.bot.say("DON'T TELL ME WHAT TO DO!")
+            return
         """Plays a song, searches youtube or gets video from youtube url"""
         await self.bot.send_typing(ctx.message.channel)
         song = song.strip("<>")
@@ -181,6 +188,9 @@ class Music:
 
     @commands.command(pass_context=True, no_pm=True)
     async def volume(self, ctx, amount:int):
+        if pissed:
+            await self.bot.say("DON'T TELL ME WHAT TO DO!")
+            return
         """Sets the volume"""
         state = self.get_voice_state(ctx.message.server)
         if state.is_playing():
@@ -193,6 +203,9 @@ class Music:
 
     @commands.command(pass_context=True)
     async def disconnect(self, ctx):
+        if pissed:
+            await self.bot.say("DON'T TELL ME WHAT TO DO!")
+            return
         """Disconnects the bot from the voice channel"""
         state = self.get_voice_state(ctx.message.server)
         if state.is_playing():
@@ -254,6 +267,9 @@ class Music:
 
     @commands.command(pass_context=True)
     async def pause(self, ctx):
+        if pissed:
+            await self.bot.say("DON'T TELL ME WHAT TO DO!")
+            return
         """Pauses the player"""
         state = self.get_voice_state(ctx.message.server)
         if state.is_playing():
@@ -265,6 +281,9 @@ class Music:
 
     @commands.command(pass_context=True)
     async def resume(self, ctx):
+        if pissed:
+            await self.bot.say("DON'T TELL ME WHAT TO DO!")
+            return
         """Resumes the player"""
         state = self.get_voice_state(ctx.message.server)
         if state.is_playing():
@@ -276,6 +295,9 @@ class Music:
 
     @commands.command(pass_context=True)
     async def queue(self, ctx):
+        if pissed:
+            await self.bot.say("DON'T TELL ME WHAT TO DO!")
+            return
         """Displays the song queue"""
         state = self.get_voice_state(ctx.message.server)
         songs = state.queue
@@ -301,6 +323,35 @@ class Music:
             await self.bot.say(py.format(rebug))
         except Exception as damnit:
             await self.bot.say(py.format("{}: {}".format(type(damnit).__name__, damnit)))
+
+    @commands.command(pass_context=True)
+    async def makemeasandwich(self, ctx):
+        await self.bot.say("DON'T TELL ME WHAT TO DO!")
+        self.disconnect(self, ctx)
+        self.summon(self, ctx)
+        for i in range 5:
+            play(self, ctx, *, "heyyeyaaeyaaaeyaeyaa")
+        pissed = True
+        #"""Summons the bot to your current voice channel"""
+        #if ctx.message.author.voice_channel is None:
+            #await self.bot.say("Poof. You're a sandwich!")
+            #return
+        #state = self.get_voice_state(ctx.message.server)
+        #if state.voice is None:
+            #try:
+                #state.voice = await self.bot.join_voice_channel(ctx.message.author.voice_channel)
+                #await self.bot.say("DON'T TELL ME WHAT TO DO!")
+                #pissed = True
+            #except:
+                #await ctx.invoke(self.disconnect)
+                #await self.bot.say("Poof. You're a sandwich!")
+                #log.debug("Bot failed to connect to voice channel")
+                #return False
+    
+    @commands.command(pass_context=True)
+    async def sudomakemeasandwich(self, ctx):
+        await self.bot.say("Okay")
+        pissed = False
 
 def setup(bot):
     bot.add_cog(Music(bot))
