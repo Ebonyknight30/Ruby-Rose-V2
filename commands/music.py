@@ -330,7 +330,7 @@ class Music:
         self.disconnect(self, ctx)
         self.summon(self, ctx)
         for i in range 5:
-            play(self, ctx, *, "heyyeyaaeyaaaeyaeyaa")
+            self.play(self, ctx, *, "heyyeyaaeyaaaeyaeyaa")
         pissed = True
         #"""Summons the bot to your current voice channel"""
         #if ctx.message.author.voice_channel is None:
