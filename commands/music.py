@@ -4,6 +4,7 @@ import youtube_dl
 import os
 import subprocess
 import shutil
+import random
 
 from discord.ext import commands
 from utils.tools import *
@@ -11,6 +12,7 @@ from utils.mysql import *
 from utils.logger import log
 from utils.opus_loader import load_opus_lib
 from utils import checks
+
 
 load_opus_lib()
 
@@ -84,7 +86,8 @@ class VoiceState:
             log.debug("Change task ran")
             if self.current is not None:
                 try:
-                    os.remove(self.current.file_url)
+                    if "assets/LocalMusic/music/" not in self.current.file_url and "assets/LocalMusic/waitingmusic/" not in self.current.file_url:
+                        os.remove(self.current.file_url)
                 except:
                     log.warning("Failed to remove {}".format(self.current.file_url))
             self.play_next_song.clear()
@@ -101,6 +104,8 @@ class Music:
     def __init__(self, bot):
         self.bot = bot
         self.voice_states = {}
+        self.pissed = False
+        self.skiplock = False
 
     def get_voice_state(self, server:discord.Server):
         voice_state = self.voice_states.get(server.id)
@@ -141,7 +146,7 @@ class Music:
 
     @commands.command(pass_context=True)
     async def play(self, ctx, *, song:str):
-        if pissed:
+        if self.pissed:
             await self.bot.say("DON'T TELL ME WHAT TO DO!")
             return
         """Plays a song, searches youtube or gets video from youtube url"""
@@ -186,9 +191,85 @@ class Music:
             await self.bot.say(traceback.format_exc())
             log.debug("{}: {}\n\n{}".format(type(e).__name__, e, traceback.format_exc()))
 
+    @commands.command(pass_context=True)
+    async def playlocal(self, ctx, *, song: str):
+        files = [f for f in os.listdir("assets/LocalMusic/music/") if os.path.isfile(os.path.join("assets/LocalMusic/music/", f))]
+        song = song.strip("<>")
+        if '.mp3' not in song:
+            song = song + '.mp3'
+        if song not in files:
+            await self.bot.say("I do not have {}, in my Local Music directory.".format(song))
+        if '.mp3' in song:
+            song = song.split('.')
+            song = song[0]
+        state = self.get_voice_state(ctx.message.server)
+        file_url = "assets/LocalMusic/music/{}.mp3".format(song)
+        player = state.voice.create_ffmpeg_player(file_url, stderr=subprocess.PIPE, after=state.toggle_next)
+        player.volume = state.volume
+        args = ("ffprobe", "-show_entries", "format=duration", "-i", file_url)
+        popen = subprocess.Popen(args, stdout=subprocess.PIPE)
+        popen.wait()
+        output= popen.stdout.read()
+        output = str(output)
+        output = output.strip("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[]=n\%/[n\%")
+        output = output.strip("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[]=n\%/[n\%")
+        output = float(output)
+        song_info = {"title":song,'duration':output}
+        entry = VoiceEntry(ctx.message, player, song_info, file_url)
+        await self.bot.say("Enqueued {}".format(entry))
+        await state.songs.put(entry)
+        state.queue.append(entry)
+
+    @commands.command(pass_context=True)
+    async def waiting(self, ctx, *, songs: str):
+        files = [f for f in os.listdir("assets/LocalMusic/waitingmusic/") if os.path.isfile(os.path.join("assets/LocalMusic/waitingmusic/", f))]
+        for all in range(songs):
+            song = random.choice(files)
+            song = song.strip("<>")
+            if '.mp3' not in song:
+                song = song + '.mp3'
+            if song not in files:
+                await self.bot.say("I do not have {}, in my Local Music directory.".format(song))
+            if '.mp3' in song:
+                song = song.split('.')
+                song = song[0]
+            state = self.get_voice_state(ctx.message.server)
+            file_url = "assets/LocalMusic/waitingmusic/{}.mp3".format(song)
+            player = state.voice.create_ffmpeg_player(file_url, stderr=subprocess.PIPE, after=state.toggle_next)
+            player.volume = state.volume
+            args = ("ffprobe", "-show_entries", "format=duration", "-i", file_url)
+            popen = subprocess.Popen(args, stdout=subprocess.PIPE)
+            popen.wait()
+            output= popen.stdout.read()
+            output = str(output)
+            output = output.strip("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[]=n\%/[n\%")
+            output = output.strip("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[]=n\%/[n\%")
+            output = float(output)
+            song_info = {"title":song,'duration':output}
+            entry = VoiceEntry(ctx.message, player, song_info, file_url)
+            await self.bot.say("Enqueued {}".format(entry))
+            await state.songs.put(entry)
+            state.queue.append(entry)
+
+    @commands.command(pass_context=True)
+    async def listlocalmusic(self, ctx):
+        await self.bot.send_typing(ctx.message.channel)
+        files = [f for f in os.listdir("assets/LocalMusic/music/") if os.path.isfile(os.path.join("assets/LocalMusic/music/", f))]
+        sayfiles = ''
+        for x in files:
+            x2 = x
+            if '.mp3' in x2:
+                x2 = x2.split('.')
+                x2 = x2[0]
+            x2 += '\n'
+            sayfiles += x2
+        await self.bot.say(sayfiles)
+
+
+
     @commands.command(pass_context=True, no_pm=True)
     async def volume(self, ctx, amount:int):
-        if pissed:
+        if self.pissed:
             await self.bot.say("DON'T TELL ME WHAT TO DO!")
             return
         """Sets the volume"""
@@ -203,7 +284,7 @@ class Music:
 
     @commands.command(pass_context=True)
     async def disconnect(self, ctx):
-        if pissed:
+        if self.pissed:
             await self.bot.say("DON'T TELL ME WHAT TO DO!")
             return
         """Disconnects the bot from the voice channel"""
@@ -229,6 +310,12 @@ class Music:
     async def skip(self, ctx):
         """Vote to skip a song. Server mods, the server owner, bot developers, and the song requester can skip the song"""
         state = self.get_voice_state(ctx.message.server)
+        if self.skiplock:
+            await self.bot.say("Skip lock is currently active.")
+            return
+        if self.pissed:
+            await self.bot.say("DON'T TELL ME WHAT TO DO!")
+            return
         if not state.is_playing():
             await self.bot.say("Nothing is playing!")
             return
@@ -267,7 +354,7 @@ class Music:
 
     @commands.command(pass_context=True)
     async def pause(self, ctx):
-        if pissed:
+        if self.pissed:
             await self.bot.say("DON'T TELL ME WHAT TO DO!")
             return
         """Pauses the player"""
@@ -281,7 +368,7 @@ class Music:
 
     @commands.command(pass_context=True)
     async def resume(self, ctx):
-        if pissed:
+        if self.pissed:
             await self.bot.say("DON'T TELL ME WHAT TO DO!")
             return
         """Resumes the player"""
@@ -295,7 +382,7 @@ class Music:
 
     @commands.command(pass_context=True)
     async def queue(self, ctx):
-        if pissed:
+        if self.pissed:
             await self.bot.say("DON'T TELL ME WHAT TO DO!")
             return
         """Displays the song queue"""
@@ -324,14 +411,89 @@ class Music:
         except Exception as damnit:
             await self.bot.say(py.format("{}: {}".format(type(damnit).__name__, damnit)))
 
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def volume(self, ctx, amount: int):
+        if self.pissed:
+            await self.bot.say("DON'T TELL ME WHAT TO DO!")
+            return
+        """Sets the volume"""
+        state = self.get_voice_state(ctx.message.server)
+        if state.is_playing():
+            player = state.player
+            player.volume = amount / 100
+            state.volume = amount / 100
+            await self.bot.say("Set the volume to `{:.0%}`".format(player.volume))
+        else:
+            await self.bot.say("Nothing is playing!")
+
+    @commands.command(pass_context=True)
+    @checks.is_dev()
+    async def skiplock(self, ctx):
+        await self.bot.say("Skip lock activated")
+        self.skiplock = True
+
+    @commands.command(pass_context=True)
+    @checks.is_dev()
+    async def skipunlock(self, ctx):
+        await self.bot.say("Skip lock de-activated")
+        self.skiplock = False
+
     @commands.command(pass_context=True)
     async def makemeasandwich(self, ctx):
+        if self.pissed:
+            await self.bot.say("DON'T TELL ME WHAT TO DO!")
+            return
         await self.bot.say("DON'T TELL ME WHAT TO DO!")
-        self.disconnect(self, ctx)
-        self.summon(self, ctx)
+        state = self.get_voice_state(ctx.message.server)
+        while state.is_playing():
+            state.skip()
+        #self.disconnect(self, ctx)
+        #self.summon(self, ctx)
         for i in range(5):
-            self.play(self, ctx, "heyyeyaaeyaaaeyaeyaa")
-        pissed = True
+            #self.play(self, ctx, "heyyeyaaeyaaaeyaeyaa")
+            song = "heyyeyaaeyaaaeyaeyaa"
+            song = song.strip("<>")
+            try:
+                state = self.get_voice_state(ctx.message.server)
+                if state.voice is None:
+                    success = await ctx.invoke(self.summon)
+                    if not success:
+                        return
+                ytdl = get_ytdl(ctx.message.server.id)
+                try:
+                    song_info = ytdl.extract_info(song, download=False, process=False)
+                    if "url" in song_info:
+                        if song_info["url"].startswith("ytsearch"):
+                            song_info = ytdl.extract_info(song_info["url"], download=False, process=False)
+                            log.debug(song_info)
+                        if "entries" in song_info:
+                            url = song_info["entries"][0]["url"]
+                        else:
+                            url = song_info["url"]
+                        url = "https://youtube.com/watch?v={}".format(url)
+                    else:
+                        url = song
+                    log.debug(url)
+                    song_info = ytdl.extract_info(url, download=True)
+                    id = song_info["id"]
+                    title = song_info["title"]
+                    file_url = "data/music/{}/{}.mp3".format(ctx.message.server.id, id)
+                    await asyncio.sleep(2)
+                    player = state.voice.create_ffmpeg_player(file_url, stderr=subprocess.PIPE, after=state.toggle_next)
+                except Exception as e:
+                    await self.bot.say("An error occurred while processing this request: {}".format(
+                        py.format("{}: {}\n{}".format(type(e).__name__, e, traceback.format_exc()))))
+                    return
+                player.volume = state.volume
+                entry = VoiceEntry(ctx.message, player, song_info, file_url)
+                await self.bot.say("Enqueued {}".format(entry))
+                await state.songs.put(entry)
+                state.queue.append(entry)
+            except Exception as e:
+                await self.bot.say(traceback.format_exc())
+                log.debug("{}: {}\n\n{}".format(type(e).__name__, e, traceback.format_exc()))
+        self.pissed = True
         #"""Summons the bot to your current voice channel"""
         #if ctx.message.author.voice_channel is None:
             #await self.bot.say("Poof. You're a sandwich!")
@@ -349,9 +511,10 @@ class Music:
                 #return False
     
     @commands.command(pass_context=True)
+    @checks.is_dev()
     async def sudomakemeasandwich(self, ctx):
         await self.bot.say("Okay")
-        pissed = False
+        self.pissed = False
 
 
 def setup(bot):
