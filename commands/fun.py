@@ -187,5 +187,16 @@ class Fun():
         """EVERYTHING NEEDS TWENTY ØNE PILØTS!"""
         await self.bot.say(input.replace("O", "Ø").replace("o", "ø"))
 
+    @commands.command(pass_context=True)
+    async def roll(self, ctx, *, sides:int):
+        roll = randint(1, sides)
+        if(roll == 1):
+             await self.bot.say("{} rolled a {} CRITICAL FAILURE".format(user.name, roll))
+        elif(roll == sides):
+            await self.bot.say("{} rolled a {} CRITICAL HIT".format(user.name, roll))
+        else:
+            await self.bot.say("{} rolled a {}".format(user.name, roll))
+        
+
 def setup(bot):
     bot.add_cog(Fun(bot))
