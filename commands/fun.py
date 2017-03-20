@@ -183,19 +183,23 @@ class Fun():
         await self.bot.say(embed=embed)
 
     @commands.command()
-    async def twentyoneify(self, *, input:str):
+    async def twentyoneify(self, ctx,*, input:str):
         """EVERYTHING NEEDS TWENTY ØNE PILØTS!"""
         await self.bot.say(input.replace("O", "Ø").replace("o", "ø"))
 
     @commands.command(pass_context=True)
-    async def roll(self, ctx, *, sides:int):
-        roll = randint(1, sides)
-        if(roll == 1):
-             await self.bot.say("{} rolled a {} CRITICAL FAILURE".format(user.name, roll))
-        elif(roll == sides):
-            await self.bot.say("{} rolled a {} CRITICAL HIT".format(user.name, roll))
+    async def roll(self, ctx, *, sides:str):
+        sides = sides.split()
+        hit = int(sides[0])
+        critical = int(sides[1])
+        fail = int(sides[2])
+        roll = random.randint(1, hit)
+        if(roll <= fail):
+             await self.bot.say("{} rolled a {} CRITICAL FAILURE".format(ctx.message.author.name, roll))
+        elif(roll >= critical):
+            await self.bot.say("{} rolled a {} CRITICAL HIT".format(ctx.message.author.name, roll))
         else:
-            await self.bot.say("{} rolled a {}".format(user.name, roll))
+            await self.bot.say("{} rolled a {}".format(ctx.message.author.name, roll))
         
 
 def setup(bot):
