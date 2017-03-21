@@ -56,6 +56,9 @@ example2 = {
     'Passives': ''
               }
 
+
+
+
 Agni = {
     "GodName":'AGNI',
     "GodClass": 'MAGE',
@@ -80,6 +83,65 @@ Agni = {
     "HP5PerLvl": 0.47,
     "BaseMP5": 5.1,
     "MP5PerLvl": 0.37,
+    'CDR':0.0,
+    'LifeSteal':0.0,
+    'Passives': ''
+              }
+
+
+AMC =  {
+    "GodName":'Ah Muzen Cab',
+    "GodClass": 'Hunter',
+    "DamageType":'Physical',
+    "BaseHP":523.0,
+    "HpPerLvl":71.0,
+    "BaseMP": 300.0,
+    "MpPerLvl": 45.0,
+    "BaseSpeed": 365.0,
+    "SpeedPerLvl": 0.0,
+    "Range": 55.0,
+    "RangePerLvl": 0.0,
+    "BaseAPS": 0.97,
+    "ApsPerLvl": 0.017,
+    "BaseATP": 40.0,
+    "AtpPerLvl": 2.20,
+    "BasePhysDef": 15.0,
+    "PhysDefPerLvl": 3.0,
+    "BaseMagDef": 31.0,
+    "MagDefPerLvl": 0.9,
+    "BaseHP5": 7.7,
+    "HP5PerLvl": 0.71,
+    "BaseMP5": 4.8,
+    "MP5PerLvl": 0.38,
+    'CDR':0.0,
+    'LifeSteal':0.0,
+    'Passives': ''
+              }
+
+Arachne =  {
+    "GodName":'Arachne',
+    "GodClass": 'Assassin',
+    "DamageType":'Physical',
+    "BaseHP":524.0,
+    "HpPerLvl":79.0,
+    "BaseMP": 251.0,
+    "MpPerLvl": 41.0,
+    "BaseSpeed": 375.0,
+    "SpeedPerLvl": 0.0,
+    "Range": 12.0,
+    "RangePerLvl": 0.0,
+    "BaseAPS": 1.04,
+    "ApsPerLvl": 0.02,
+    "BaseATP": 42.0,
+    "AtpPerLvl": 2.20,
+    "BasePhysDef": 19.0,
+    "PhysDefPerLvl": 3.0,
+    "BaseMagDef": 31.0,
+    "MagDefPerLvl": 0.9,
+    "BaseHP5": 9.7,
+    "HP5PerLvl": 0.67,
+    "BaseMP5": 5.3,
+    "MP5PerLvl": 0.46,
     'CDR':0.0,
     'LifeSteal':0.0,
     'Passives': ''

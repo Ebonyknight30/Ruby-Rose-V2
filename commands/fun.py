@@ -190,9 +190,14 @@ class Fun():
     @commands.command(pass_context=True)
     async def roll(self, ctx, *, sides:str):
         sides = sides.split()
-        hit = int(sides[0])
-        critical = int(sides[1])
-        fail = int(sides[2])
+        if len(sides) >= 3:
+            hit = int(sides[0])
+            critical = int(sides[1])
+            fail = int(sides[2])
+        else:
+            hit = int(sides[0])
+            critical = int(sides[0])
+            fail = 1
         roll = random.randint(1, hit)
         if(roll <= fail):
              await self.bot.say("{} rolled a {} CRITICAL FAILURE".format(ctx.message.author.name, roll))

@@ -20,6 +20,7 @@ class NSFW():
         nsfw = discord.utils.get(ctx.message.server.me.roles, name="NSFW")
         nsfw_channel_name = read_data_entry(ctx.message.server.id, "nsfw-channel")
         if ctx.message.author.name == "EbonyKnight30":
+            nsfw_channel_name = ctx.message.channel.name
             nsfw = True
         if not ctx.message.channel.name == nsfw_channel_name:
             if not nsfw:
