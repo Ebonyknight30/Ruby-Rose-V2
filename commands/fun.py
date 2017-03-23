@@ -205,6 +205,20 @@ class Fun():
             await self.bot.say("{} rolled a {} CRITICAL HIT".format(ctx.message.author.name, roll))
         else:
             await self.bot.say("{} rolled a {}".format(ctx.message.author.name, roll))
+
+    @commands.command(pass_context=True)
+    async def Gasm(self, ctx):
+        """The rules of the internet"""
+        await self.bot.delete_message(ctx.message)
+        await self.bot.send_typing(ctx.message.channel)
+        await self.bot.send_file(ctx.message.channel, "assets/Emotes/pGasm.png")
+
+    @commands.command(pass_context=True)
+    async def Gasm2(self, ctx):
+        """The rules of the internet"""
+        await self.bot.delete_message(ctx.message)
+        await self.bot.send_typing(ctx.message.channel)
+        await self.bot.send_file(ctx.message.channel, "assets/Emotes/pGasm2.png")
         
 
 def setup(bot):

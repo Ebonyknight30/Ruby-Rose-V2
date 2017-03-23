@@ -1,7 +1,9 @@
 import time
+import datetime
 
 from discord.ext import commands
-from datetime import date
+from datetime import date, time
+from time import time
 from utils.tools import *
 from utils.logger import log
 from utils.config import Config
@@ -198,5 +200,14 @@ class Information():
         embed.set_thumbnail(url="http://s.ppy.sh/a/{}".format(user.user_id))
         await self.bot.say(embed=embed)
 
+    @commands.command()
+    async def whenWillJackBeHome(self):
+        """Displays how many days until it's halloween"""
+        currentT = datetime.datetime.now()
+        currentT = datetime.datetime(2017,3,21,currentT.hour,currentT.minute,currentT.second,currentT.microsecond)
+        t = datetime.datetime(2017,3,21,17,00,0,0)
+
+        t2 = currentT-t
+        await self.bot.say("{},{}".format(t2.time()))
 def setup(bot):
     bot.add_cog(Information(bot))
