@@ -189,6 +189,7 @@ class Fun():
 
     @commands.command(pass_context=True)
     async def roll(self, ctx, *, sides:str):
+        """Rolls a Dice with the spesified number of sides, and critical hit and fail thuresh holds"""
         sides = sides.split()
         if len(sides) >= 3:
             hit = int(sides[0])
@@ -208,17 +209,47 @@ class Fun():
 
     @commands.command(pass_context=True)
     async def Gasm(self, ctx):
-        """The rules of the internet"""
         await self.bot.delete_message(ctx.message)
         await self.bot.send_typing(ctx.message.channel)
         await self.bot.send_file(ctx.message.channel, "assets/Emotes/pGasm.png")
 
     @commands.command(pass_context=True)
     async def Gasm2(self, ctx):
-        """The rules of the internet"""
         await self.bot.delete_message(ctx.message)
         await self.bot.send_typing(ctx.message.channel)
         await self.bot.send_file(ctx.message.channel, "assets/Emotes/pGasm2.png")
+
+    @commands.command(pass_context=True)
+    async def emote(self, ctx, *, em: str):
+        emote = em
+        if '.' not in emote:
+            emote += '.png'
+        else:
+            checkEmote = emote.split('.')
+            if 'png' not in checkEmote:
+                emote = checkEmote[0]+'.png'
+        files = [f for f in os.listdir("assets/Emotes/") if os.path.isfile(os.path.join("assets/Emotes/", f))]
+        path = "assets/Emotes/"
+        fileList = []
+        for pl in files:
+            fileList.append(pl.upper())
+
+        if emote.upper() in fileList:
+            z = fileList.index(emote.upper())
+            z2 = files[z]
+            path += z2
+        else:
+            await self.bot.say("The Emote {} was not found, try checking your spelling".format(emote))
+            return
+        await self.bot.delete_message(ctx.message)
+        await self.bot.send_typing(ctx.message.channel)
+        await self.bot.send_file(ctx.message.channel, path)
+
+
+
+
+
+
         
 
 def setup(bot):
