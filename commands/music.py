@@ -191,6 +191,8 @@ class Music:
             await self.bot.say(traceback.format_exc())
             log.debug("{}: {}\n\n{}".format(type(e).__name__, e, traceback.format_exc()))
 
+
+
     @commands.command(pass_context=True)
     async def playlocal(self, ctx, *, song: str):
         files = [f for f in os.listdir("assets/LocalMusic/music/") if os.path.isfile(os.path.join("assets/LocalMusic/music/", f))]
