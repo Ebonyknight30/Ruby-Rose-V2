@@ -34,7 +34,8 @@ magic_conch_shell = [
     "My reply is no",
     "My sources say no",
     "Outlook not so good",
-    "Very doubtful"
+    "Very doubtful",
+    "No chance in hell my friend"
 ]
 
 # Insults for the insult command
@@ -109,3 +110,7 @@ jokes = [
     "Pony walks into a bar\nBartender says \"It's karaoke night if you're interested\"\nPony replies \"No, sorry, I'm a little horse",
     "two cats get into a swimming race, one was an american cat named OneTwoThree, and the other was a french cat named UnDeuxTrois\n\nOneTwoThree won becuase the UnDeuxTrois cat sank"
     ]
+
+compliments = [
+    "Add more compliments please Jack is having a hard time with it"
+]

@@ -115,14 +115,14 @@ class Fun():
     async def insult(self, *, user:str):
         """Insult those ass wipes"""
         #if user == "EbonyKnight30" or user == '@Ivory' or user == 'Jack' or user == 'Ivory':
-        if user.upper() in ["EBONYKNIGHT30", "@IVORY", "JACK", "IVORY", "BALLSBS2", "BALL_SBS2", "MAN-PRI", "MANPRI", "@MAN-PRI", "SAM"]:
+        if user.upper() in ["EBONYKNIGHT30", "EBONY", "JACK", "ISKANDAR", "BALLSBS2", "BALL_SBS2", "MAN-PRI", "THE RESURRECTOR", "RESURRECTOR", "SAM"]:
             await self.bot.say("{} {}".format(user, random.choice(compliments)))
             return
-        elif user.upper() in "RUBY ROSE":
+        elif user.upper() in "YANG XIAO LONG":
              await self.bot.say('Bitch I am awesome!')
              return
-        elif user.upper() in "YANG XIAO LONG":
-            await self.bot.say('Yang can sometimes cause things to get a bit out of HAND')
+        elif user.upper() in "RUBY ROSE":
+            await self.bot.say('I love my little sister but she can sometimes be a little dense')
             return
         elif user.upper() in "WEISS SCHNEE":
             await self.bot.say('Weiss is a bitch')
@@ -150,8 +150,8 @@ class Fun():
             await self.bot.say("I rate you a 10/10")
         elif user == self.bot.user:
             await self.bot.say("I rate myself a -1/10")
-        elif user.name == 'EbonyKnight30' or user.name == '@Ivory' or user.name == 'Jack' or user.name == 'Ivory':
-            await self.bot.say("I rate Jack a -10000/10 because he can't spell")
+        elif user.name == 'EbonyKnight30' or user.name == '@Iskandar, King of Conquerors' or user.name == 'Jack' or user.name == 'Iskandar, King of Conquerors':
+            await self.bot.say("I rate Jack a 10000/10 because he is the one who has done 90% of the commits to the git")
         else:
             await self.bot.say("I rate {} a {}/10".format(user.name, random.randint(0, 10)))
 

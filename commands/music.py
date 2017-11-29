@@ -196,38 +196,14 @@ class Music:
     @commands.command(pass_context=True)
     async def playlocal(self, ctx, *, song: str):
         files = [f for f in os.listdir("assets/LocalMusic/music/") if os.path.isfile(os.path.join("assets/LocalMusic/music/", f))]
+        await self.bot.send_typing(ctx.message.channel)
         song = song.strip("<>")
-        if '.mp3' not in song:
-            song = song + '.mp3'
-        if song not in files:
-            await self.bot.say("I do not have {}, in my Local Music directory.".format(song))
-        if '.mp3' in song:
-            song = song.split('.')
-            song = song[0]
-        state = self.get_voice_state(ctx.message.server)
-        file_url = "assets/LocalMusic/music/{}.mp3".format(song)
-        player = state.voice.create_ffmpeg_player(file_url, stderr=subprocess.PIPE, after=state.toggle_next)
-        player.volume = state.volume
-        args = ("ffprobe", "-show_entries", "format=duration", "-i", file_url)
-        popen = subprocess.Popen(args, stdout=subprocess.PIPE)
-        popen.wait()
-        output= popen.stdout.read()
-        output = str(output)
-        output = output.strip("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[]=n\%/[n\%")
-        output = output.strip("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[]=n\%/[n\%")
-        output = float(output)
-        song_info = {"title":song,'duration':output}
-        entry = VoiceEntry(ctx.message, player, song_info, file_url)
-        await self.bot.say("Enqueued {}".format(entry))
-        await state.songs.put(entry)
-        state.queue.append(entry)
-
-    @commands.command(pass_context=True)
-    async def waiting(self, ctx, *, songs: str):
-        files = [f for f in os.listdir("assets/LocalMusic/waitingmusic/") if os.path.isfile(os.path.join("assets/LocalMusic/waitingmusic/", f))]
-        for all in range(songs):
-            song = random.choice(files)
-            song = song.strip("<>")
+        try:
+            state = self.get_voice_state(ctx.message.server)
+            if state.voice is None:
+                success = await ctx.invoke(self.summon)
+                if not success:
+                    return
             if '.mp3' not in song:
                 song = song + '.mp3'
             if song not in files:
@@ -235,7 +211,44 @@ class Music:
             if '.mp3' in song:
                 song = song.split('.')
                 song = song[0]
+            file_url = "assets/LocalMusic/music/{}.mp3".format(song)
+            player = state.voice.create_ffmpeg_player(file_url, stderr=subprocess.PIPE, after=state.toggle_next)
+            player.volume = state.volume
+            args = ("ffprobe", "-show_entries", "format=duration", "-i", file_url)
+            popen = subprocess.Popen(args, stdout=subprocess.PIPE)
+            popen.wait()
+            output= popen.stdout.read()
+            output = str(output)
+            output = output.strip("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[]=n\%/[n\%")
+            output = output.strip("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[]=n\%/[n\%")
+            output = float(output)
+            song_info = {"title":song,'duration':output}
+            entry = VoiceEntry(ctx.message, player, song_info, file_url)
+            await self.bot.say("Enqueued {}".format(entry))
+            await state.songs.put(entry)
+            state.queue.append(entry)
+        except Exception as e:
+            await self.bot.say(traceback.format_exc())
+            log.debug("{}: {}\n\n{}".format(type(e).__name__, e, traceback.format_exc()))
+
+    @commands.command(pass_context=True)
+    async def waiting(self, ctx, *, songs: str):
+        files = [f for f in os.listdir("assets/LocalMusic/waitingmusic/") if os.path.isfile(os.path.join("assets/LocalMusic/waitingmusic/", f))]
+        for all in range(songs):
+            song = random.choice(files)
+            song = song.strip("<>")
             state = self.get_voice_state(ctx.message.server)
+            if state.voice is None:
+                success = await ctx.invoke(self.summon)
+                if not success:
+                    return
+            if '.mp3' not in song:
+                song = song + '.mp3'
+            if song not in files:
+                await self.bot.say("I do not have {}, in my Local Music directory.".format(song))
+            if '.mp3' in song:
+                song = song.split('.')
+                song = song[0]
             file_url = "assets/LocalMusic/waitingmusic/{}.mp3".format(song)
             player = state.voice.create_ffmpeg_player(file_url, stderr=subprocess.PIPE, after=state.toggle_next)
             player.volume = state.volume
@@ -263,8 +276,8 @@ class Music:
             if '.mp3' in x2:
                 x2 = x2.split('.')
                 x2 = x2[0]
-            x2 += '\n'
-            sayfiles += x2
+                x2 += '\n'
+                sayfiles += x2
         await self.bot.say(sayfiles)
 
 
