@@ -245,6 +245,11 @@ class Fun():
         await self.bot.send_typing(ctx.message.channel)
         await self.bot.send_file(ctx.message.channel, path)
 
+    @commands.command()
+    async def joke(self):
+        """I got drunk on halloween in 2016 it was great"""
+        await self.bot.say(random.choice(jokes))
+
 
 
 
